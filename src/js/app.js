@@ -40,7 +40,7 @@ function render(variables = {}) {
 
   // Default si no hay nada
   if (fullName === "") {
-    fullName = "Lucy";
+    fullName = "Your name Your lastname";
   }
 
   // ===== ROLE =====

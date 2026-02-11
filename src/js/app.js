@@ -23,73 +23,85 @@ import "../style/index.css";
     }
  */
 function render(variables = {}) {
-  console.log("These are the current variables: ", variables); // print on the console
-  // here we ask the logical questions to make decisions on how to build the html
-  // if includeCover==false then we reset the cover code without the <img> tag to make the cover transparent.
+  // Cover condiciona
   let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
   if (variables.includeCover == false) cover = "<div class='cover'></div>";
 
+  // ===== NOMBRE =====
   let fullName = "";
-  let role = "";
-  let location = "";
 
   if (variables.name) {
     fullName += variables.name;
-  } else if (variables.lastName) {
-    fullName += " " + variables.lastName;
   }
 
-  if (variables.role) {
-    role += variables.role;
+  if (variables.lastName) {
+    fullName += (fullName !== "" ? " " : "") + variables.lastName;
   }
+
+  // Default si no hay nada
+  if (fullName === "") {
+    fullName = "Lucy";
+  }
+
+  // ===== ROLE =====
+  let role = variables.role || "";
+
+  // ===== LOCATION =====
+  let location = "";
 
   if (variables.city) {
     location += variables.city;
   }
+
   if (variables.country) {
     if (location !== "") {
       location += ", ";
     }
-
     location += variables.country;
   }
 
-  let socialHTML = "";
+  // ===== SOCIAL MEDIA =====
+  // Fallbacks para que la barra SIEMPRE aparezca
+  let twitterUser = variables.twitter || "4geeksacademy";
+  let githubUser = variables.github || "4geeksacademy";
+  let linkedinUser = variables.linkedin || "school/4geeksacademy";
+  let instagramUser = variables.instagram || "4geeksacademy";
 
-  if (variables.twitter) {
-    socialHTML += `
-      <li><a href="https://twitter.com/${variables.twitter}"><i class="fab fa-twitter"></i></a></li>
-    `;
-  }
-  if (variables.github) {
-    socialHTML += `
-      <li><a href="https://github.com/${variables.github}"><i class="fab fa-github"></i></a></li>
-    `;
-  }
-  if (variables.linkedin) {
-    socialHTML += `
-      <li><a href="https://linkedin.com/in/${variables.linkedin}"><i class="fab fa-linkedin"></i></a></li>
-    `;
-  }
-  if (variables.instagram) {
-    socialHTML += `
-      <li><a href="https://instagram.com/${variables.instagram}"><i class="fab fa-instagram"></i></a></li>
-    `;
-  }
+  let socialHTML = `
+    <li><a href="https://twitter.com/${twitterUser}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+    <li><a href="https://github.com/${githubUser}" target="_blank"><i class="fab fa-github"></i></a></li>
+    <li><a href="https://linkedin.com/${linkedinUser}" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+    <li><a href="https://instagram.com/${instagramUser}" target="_blank"><i class="fab fa-instagram"></i></a></li>
+  `;
 
-  // reset the website body with the new html output
-  document.querySelector("#widget_content").innerHTML = `<div class="widget">
-            ${cover}
-          <img src="${variables.avatarURL}" class="photo" />
-          <h1>${fullName}</h1>
-          <h2>${role}</h2>
-          <h3>${location}</h3>
-          <ul class="${variables.socialMediaPosition}">
-            ${socialHTML}
-          </ul>
+  // ===== POSICIÓN BARRA =====
+  // Asegura que siempre sea left o right válido
+  const posClass = (variables.socialMediaPosition || "right")
+    .toString()
+    .toLowerCase()
+    .includes("left")
+    ? "position-left"
+    : "position-right";
 
-        </div>
-    `;
+  // ===== RENDER FINAL =====
+  document.querySelector("#widget_content").innerHTML = `
+    <div class="widget">
+      ${cover}
+
+      <img src="${variables.avatarURL}" class="photo" />
+
+      <h1>${fullName}</h1>
+
+      <h2>${role}</h2>
+
+      <h3>${location}</h3>
+
+      <ul class="${posClass}">
+        ${socialHTML}
+      </ul>
+
+    </div>
+  `;
 }
 
 /**
